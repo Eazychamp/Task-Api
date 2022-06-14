@@ -23,14 +23,14 @@ const getNotesById = async (req, res) => {
 }
 
 const createNote = async (req, res) => {
-    const { title, description } = req.body
+    const { title, description, category } = req.body
 
-    if (!title || !description) {
+    if (!title || !description || !category) {
         res.status(400)
         throw new Error ("All fields are required!")
         return
     } else {
-        let newNote = new Notes ({ title, description, user : req.user._id })
+        let newNote = new Notes ({ title, description, user : req.user._id, category })
         const createdNote = await newNote.save();
 
         res.status(201).json(createdNote);
@@ -80,4 +80,20 @@ const updateNote = async (req, res) => {
     }
 }
 
-module.exports = { getAllNotes, getUserNote, getNotesById, createNote, deleteNote, updateNote };
+const aggregationMethod = async (req, res) => {
+    const {category} = req.body
+    const haha = await Notes.aggregate([
+        { $match: { category } }
+      ])
+    const sorted = await Notes.aggregate([
+        { $sort : { 'title' : -1 }}
+    ])
+
+    res.status(200).json({
+        status : 'ok',
+        haha,
+        sorted
+    })
+}
+
+module.exports = { getAllNotes, getUserNote, getNotesById, createNote, deleteNote, updateNote, aggregationMethod };

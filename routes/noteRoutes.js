@@ -1,11 +1,12 @@
 // import { protect } from "../middlewares/authMiddleware";
 const {protect} = require('../middlewares/authMiddleware')
 const express = require("express");
-const { getAllNotes, getUserNote, getNotesById, createNote, deleteNote, updateNote } = require("../controllers/notesController");
+const { getAllNotes, getUserNote, getNotesById, createNote, deleteNote, updateNote, aggregationMethod } = require("../controllers/notesController");
 
 const router = express.Router();
 
 router.route("/all").get(getAllNotes);
+router.route("/aggregation").post(aggregationMethod);
 router.route("/create").post(protect, createNote);
 router.route("/delete").post(protect, deleteNote);
 router.route("/update").post(protect, updateNote);

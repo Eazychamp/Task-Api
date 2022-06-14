@@ -56,4 +56,10 @@ const loginUser = asyncHandler(async (req, res) => {
 	}
 });
 
-module.exports = { registerUser, loginUser };
+const getUsers = async(req, res) => {
+	const filter = {};
+	const allUsers = await User.find(filter);
+	res.status(200).json(allUsers)
+}
+
+module.exports = { registerUser, loginUser,getUsers };

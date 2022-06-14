@@ -6,6 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const noteRoutes = require('./routes/noteRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const PORT = 4000;
 
@@ -22,6 +23,7 @@ connection.once('open', function() {
 
 app.use('/api/users', userRoutes)
 app.use('/api/notes', noteRoutes)
+app.use('/api/profile', profileRoutes)
 
 // Error Handling middlewares
 app.use(notFound);
