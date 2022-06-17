@@ -1,4 +1,5 @@
 const Profile = require('../models/profileModel')
+const User = require('../models/userModel')
 
 const createProfileInfo = async (req, res) => {
     const { name, address, favSport , age, mobile, gender } = req.body
@@ -10,6 +11,39 @@ const createProfileInfo = async (req, res) => {
 const profileInfo = async (req, res) => {
     let {type,key, value} = req.body
     let resultJson 
+
+
+    if (type === 'lookup') {
+        resultJson = await User.aggregate([
+            {
+                $lookup : {
+                    from: 'profiles',
+                    localField: 'name',
+                    foreignField: 'name',
+                    as: 'userInfo'
+                }
+            }, 
+            {$unwind : '$userInfo'},
+            {
+                $lookup : {
+                    from: 'projects',
+                    localField: 'name',
+                    foreignField: 'name',
+                    as: 'projectInfo'
+                }
+            }, 
+            { 
+                $unwind: '$projectInfo' 
+              },
+            {
+                $project : {
+                    name : 1, email : 1, isAdmin : 1, address : '$userInfo.address', age : '$userInfo.age', mobile : '$userInfo.mobile', favSport : '$userInfo.favSport', gender : '$userInfo.gender',
+                    projects : '$projectInfo.projects'
+                }
+            },
+        ])
+    }
+
 
     // aggration method match to get matched  elements
     if (type === 'match') {
